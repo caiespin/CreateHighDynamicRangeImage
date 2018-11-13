@@ -16,9 +16,9 @@ for c = 1:m
         if strlength(files(c)) > 1
           values = strsplit(files(c),{'G','_','.'});
           gain = values(2);
-          values(3) = " "+values(3);
+          values(3) = ' '+values(3);
           T = strcat(T,values(3));
-          files(c) = " "+files(c);
+          files(c) = ' '+files(c);
           Imfiles = strcat(Imfiles,files(c));
         end
     end
