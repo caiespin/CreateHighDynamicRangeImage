@@ -2,37 +2,7 @@ clc
 clear all
 close all
 %% Calculate the Fuji X-E1 compression algorithm
-%filename base string
-baseFujiFName = 'Gamma_img/FUJI/_DSF16';
-%extension string
-fext = '.JPG';
-%which files to use
-baseFujiFN = 87-1;
-x_min = 1600;
-y_min = 1200;
-files = 93-87; %number of files
-%times_fuji = [1/30;1/60;1/125;1/250;1/500;1/1000]; %exposure data
-
-times_fuji = [1/4000;1/2000;1/1000;1/500;1/250;1/125;1/60];
-for file = 1:files+1
-    %choose the file based on the index
-    FN = baseFujiFN+file;
-    FNstr = num2str(FN);
-    %calculate the filename
-    fName = strcat(baseFujiFName,FNstr,fext);
-    %read image data
-    pic = imread(fName);
-    %mask off central white portion
-    mask = imcrop(pic,[x_min y_min,100,100]);
-    %split into channels
-    RF = mask(:,:,1);
-    GF = mask(:,:,2);
-    BF = mask(:,:,3);
-    %calculate mean brightness
-    mean_RF(file) = mean2(RF);
-    mean_GF(file) = mean2(GF);
-    mean_BF(file) = mean2(BF);
-end
+[mean_RF, mean_BF, mean_GF, times_fuji, gain, Imfiles] = RadioCalData('G800')
 figure(1)
 subplot(2,1,1)
 plot(times_fuji,mean_RF,'r--x')
@@ -49,9 +19,9 @@ legend('Red','Blue','Green')
 %fName = ('Mission Chapel/_DSF1678.JPG')
 fName = ('Bike/_DSF1700.JPG');%1/4
 Pic1 = imread(fName);
-[Pic1_Lin(:,:,1), gR, sR] = Linearization(Pic1(:,:,1), mean_RF, times_fuji');
-[Pic1_Lin(:,:,2), gG, sG] = Linearization(Pic1(:,:,2), mean_GF, times_fuji');
-[Pic1_Lin(:,:,3), gB, sB] = Linearization(Pic1(:,:,3), mean_BF, times_fuji');
+[Pic1_Lin(:,:,1), gR, sR] = Linearization(Pic1(:,:,1), mean_RF, times_fuji);
+[Pic1_Lin(:,:,2), gG, sG] = Linearization(Pic1(:,:,2), mean_GF, times_fuji);
+[Pic1_Lin(:,:,3), gB, sB] = Linearization(Pic1(:,:,3), mean_BF, times_fuji);
 scale = max([sR sG sB]);
 
 subplot(2,1,2)
@@ -69,17 +39,17 @@ legend('Red','Blue','Green')
 %fName = ('Mission Chapel/_DSF1674.JPG');
 fName = ('Bike/_DSF1702.JPG');%1/15
 Pic2 = imread(fName);
-[Pic2_Lin(:,:,1), gR, sR] = Linearization(Pic2(:,:,1), mean_RF, times_fuji');
-[Pic2_Lin(:,:,2), gG, sG] = Linearization(Pic2(:,:,2), mean_GF, times_fuji');
-[Pic2_Lin(:,:,3), gB, sB] = Linearization(Pic2(:,:,3), mean_BF, times_fuji');
+[Pic2_Lin(:,:,1), gR, sR] = Linearization(Pic2(:,:,1), mean_RF, times_fuji);
+[Pic2_Lin(:,:,2), gG, sG] = Linearization(Pic2(:,:,2), mean_GF, times_fuji);
+[Pic2_Lin(:,:,3), gB, sB] = Linearization(Pic2(:,:,3), mean_BF, times_fuji);
 scale = max([sR sG sB]);
 %=====Image 3========
 %fName = ('Mission Chapel/_DSF1675.JPG');
 fName = ('Bike/_DSF1704.JPG');%1/60
 Pic3 = imread(fName);
-[Pic3_Lin(:,:,1), gR, sR] = Linearization(Pic3(:,:,1), mean_RF, times_fuji');
-[Pic3_Lin(:,:,2), gG, sG] = Linearization(Pic3(:,:,2), mean_GF, times_fuji');
-[Pic3_Lin(:,:,3), gB, sB] = Linearization(Pic3(:,:,3), mean_BF, times_fuji');
+[Pic3_Lin(:,:,1), gR, sR] = Linearization(Pic3(:,:,1), mean_RF, times_fuji);
+[Pic3_Lin(:,:,2), gG, sG] = Linearization(Pic3(:,:,2), mean_GF, times_fuji);
+[Pic3_Lin(:,:,3), gB, sB] = Linearization(Pic3(:,:,3), mean_BF, times_fuji);
 scale = max([sR sG sB]);
 %=======Plot original images vs linearized images=====
 figure
