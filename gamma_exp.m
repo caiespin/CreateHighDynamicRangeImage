@@ -33,12 +33,14 @@ fext = '.JPG';
 %which files to use
 baseFujiFN = 87-1;
 x_min = 1600;
-y_min = 1200;
-files = 93-87; %number of files
-%times_fuji = [1/30;1/60;1/125;1/250;1/500;1/1000]; %exposure data
-
+y_min = 1000;
+%exposure data
 times_fuji = [1/4000;1/2000;1/1000;1/500;1/250;1/125;1/60];
-for file = 1:files+1
+files = size(times_fuji,1);
+time = num2str(times_fuji);
+
+figure()
+for file = 1:files
     %choose the file based on the index
     FN = baseFujiFN+file;
     FNstr = num2str(FN);
@@ -48,6 +50,10 @@ for file = 1:files+1
     pic = imread(fName);
     %mask off central white portion
     mask = imcrop(pic,[x_min y_min,100,100]);
+    subplot(1,files,file)
+    imshow(mask)
+    timeStr = num2str(times_fuji(file,1));
+    title(strcat('t = ' , timeStr),'fontsize',10)
     %split into channels
     RF = mask(:,:,1);
     GF = mask(:,:,2);
@@ -59,28 +65,30 @@ for file = 1:files+1
 end
 %Show all the images for linearization experiments.
 
+
 figure()
-subplot(2,1,1)
-plot(times_sony,mean_R,'r--x')
-hold on
-plot(times_sony,mean_G, 'g--x')
-plot(times_sony,mean_B, 'b--x')
-hold off
-title('Sony Camera Compression Data')
-xlabel('Exposure time [sec]')
-ylabel('Brightness [au]')
-legend('Red','Blue','Green')
-subplot(2,1,2)
+% subplot(2,1,1)
+% plot(times_sony,mean_R,'r--x')
+% hold on
+% plot(times_sony,mean_G, 'g--x')
+% plot(times_sony,mean_B, 'b--x')
+% hold off
+% title('Sony Camera Compression Data')
+% xlabel('Exposure time [sec]')
+% ylabel('Brightness [au]')
+% legend('Red','Blue','Green')
+% subplot(2,1,2)
 plot(times_fuji,mean_RF,'r--x')
 hold on
 plot(times_fuji,mean_BF, 'b--x')
 plot(times_fuji,mean_GF, 'g--x')
 hold off
+ax = gca;
+ax.FontSize = 12;
 title('Fuji X-E2 Camera Compression Data')
 xlabel('Exposure time [sec]')
 ylabel('Brightness [au]')
 legend('Red','Blue','Green')
-
 %% Calculate the compression algorithm
 %for the Fuji camera:
 t = times_fuji;
@@ -104,13 +112,14 @@ r = A\y;
 y = mean_GF';
 g = A\y;
 %calculate interpolation vector
+e = zeros(1,255);
 for i = 1:255
     e(i) = i/255;
     r_e(i) = pixel_fit(e(i),1,r,g,b,1);
     g_e(i) = pixel_fit(e(i),2,r,g,b,1);
     b_e(i) = pixel_fit(e(i),3,r,g,b,1);
 end
-e = e';
+
 
 %test an inverse function given e input vector and r_e data
 %in other words e = Bx

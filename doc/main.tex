@@ -39,10 +39,28 @@
 %====================================Begin document=======================================
 \begin{document}
 \maketitle
+%-----------------------------------------------------------------------------------------
+\section{Introduction}
+
 %-----------------------------------------------------------------------------------------S1
 \section{Camera Radiometric Calibration}
 First we need to reverse-engineer the function $f(\cdot)$ and invert it, obtaining an approximation of the true (linear) brightness $B=f-1(B')$.
-%-----------------------------------------------------------------------------------------
+\begin{figure}[htb!]
+    \begin{center}
+        \includegraphics[width=\textwidth]{white_fuji.jpg}
+	 \end{center}
+    \caption{Fuji X-E2 white calibration images and exposure times. All images taken at ISO 800.} 
+    \label{fig:white}
+\end{figure}
+
+\begin{figure}[htb!]
+    \begin{center}
+        \includegraphics[width=6 in]{Ecal.pdf}
+	 \end{center}
+    \caption{Fuji X-E2 brightness values versus exposure time at ISO 800.} 
+    \label{fig:Ecal}
+\end{figure}
+\FloatBarrier--------------------------------------------------------------------------------------
 \section{Picture Stack Acquisition}
 Now weed to take a stack of 3 images of a high-dynamic (high contrast) scene, so we proceed to take a stack of multiple pictures at different exposure time $T$ with fixed ISO gain $G$ and based on their corresponding histograms we can decide which 3 pictures to extract from this stack.
 
