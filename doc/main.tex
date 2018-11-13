@@ -60,7 +60,25 @@ First we need to reverse-engineer the function $f(\cdot)$ and invert it, obtaini
     \caption{Fuji X-E2 brightness values versus exposure time at ISO 800.} 
     \label{fig:Ecal}
 \end{figure}
-\FloatBarrier--------------------------------------------------------------------------------------
+
+
+\begin{figure}[htb!]
+    \begin{center}
+        \includegraphics[width=6 in]{powerfit.pdf}
+	 \end{center}
+    \caption{Power fit to the exposure data for each color channel} 
+    \label{fig:powerfit}
+\end{figure}
+
+\begin{figure}[htb!]
+    \begin{center}
+        \includegraphics[width=6 in]{linearExposure.pdf}
+	 \end{center}
+    \caption{Linearization results on exposure data for each channel} 
+    \label{fig:linEx}
+\end{figure}
+\FloatBarrier
+%---------------------------------------------
 \section{Picture Stack Acquisition}
 Now weed to take a stack of 3 images of a high-dynamic (high contrast) scene, so we proceed to take a stack of multiple pictures at different exposure time $T$ with fixed ISO gain $G$ and based on their corresponding histograms we can decide which 3 pictures to extract from this stack.
 
@@ -81,6 +99,15 @@ We proceed to create a composite HDR image from our stack of three linearized pi
 %-----------------------------------------------------------------------------------------S3
 \section{Composite Image Reproduction}
 Now we need to revert the linearization by applying a non-linear function that will amplify the small values and reduce the large values
+\begin{figure}[htb!]
+    \begin{center}
+        \includegraphics[width=6 in]{chapelLDR.jpg}
+	 \end{center}
+    \caption{Composite image 1 after tone map function} 
+    \label{fig:LDR1}
+\end{figure}
+\FloatBarrier
+
 %-----------------------------------------------------------------------------------------S4
 \section{Script Execution}
 

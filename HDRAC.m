@@ -1,37 +1,14 @@
-%Gamma experiment
+%HDRAC--HDR algorithm by Aaron and Carlos
 clear all;
 close all;
-x_min = 2650;
-x_max = 2750;
-y_min = 1300;
-y_max = 1400;
-times_sony = [1/125;1/160;1/160;1/200;1/250;1/320;1/400;1/500;1/640;1/800;1/1000;1/1250;1/1600;1/2000];
 
-baseFN = 373;
-baseFName = 'Gamma_img/DSC00';
-fext = '.JPG';
-files = 387-374;
-for file = 1:files+1
-    FN = baseFN+file;
-    FNstr = num2str(FN);
-    fName = strcat(baseFName,FNstr,fext);
-    pic = imread(fName);
-    mask = pic(y_min:y_max,x_min:x_max,:);
-    R = mask(:,:,1);
-    G = mask(:,:,2);
-    B = mask(:,:,3);
-    mean_R(file) = mean2(R);
-    mean_G(file) = mean2(G);
-    mean_B(file) = mean2(B);
-end
-
-%% Calculate the Fuji X-E2 compression algorithm
+%% Generate the Fuji X-E2 Radiometric calibration
 %filename base string
 baseFujiFName = 'Gamma_img/FUJI/_DSF16';
 %extension string
 fext = '.JPG';
 %which files to use
-baseFujiFN = 87-1;
+baseFujiFN = 87-1; %first file is 87
 x_min = 1600;
 y_min = 1000;
 %exposure data
@@ -63,21 +40,9 @@ for file = 1:files
     mean_GF(file) = mean2(GF);
     mean_BF(file) = mean2(BF);
 end
-%Show all the images for linearization experiments.
-
+%Show all the data from the exposure tests
 
 figure()
-% subplot(2,1,1)
-% plot(times_sony,mean_R,'r--x')
-% hold on
-% plot(times_sony,mean_G, 'g--x')
-% plot(times_sony,mean_B, 'b--x')
-% hold off
-% title('Sony Camera Compression Data')
-% xlabel('Exposure time [sec]')
-% ylabel('Brightness [au]')
-% legend('Red','Blue','Green')
-% subplot(2,1,2)
 plot(times_fuji,mean_RF,'r--x')
 hold on
 plot(times_fuji,mean_BF, 'b--x')
@@ -89,94 +54,67 @@ title('Fuji X-E2 Camera Compression Data')
 xlabel('Exposure time [sec]')
 ylabel('Brightness [au]')
 legend('Red','Blue','Green')
-%% Calculate the compression algorithm
+%% Calc Linearization Parameters
 %for the Fuji camera:
 t = times_fuji;
-E = t/max(t); %normalize exposure to 1 for max t
-%fit each channel separately
-%blue channel
-y = mean_BF';
-A = zeros(length(E),4);
-for i = 1:length(E)
-    A(i,:) = [1,E(i),E(i)^2,E(i)^3];
-end
-gammaFun = @(x,E)x(1)*E.^(1/x(2));
-x0 = [40 1];
-gamma_fit = lsqcurvefit(gammaFun,x0,E,mean_RF')
-%use least squares fit to find polynomial coefficients
-b = A\y;
-%red channel
-y = mean_RF';
-r = A\y;
-%green channel
-y = mean_GF';
-g = A\y;
-%calculate interpolation vector
-e = zeros(255,1);
-for i = 1:255
-    e(i) = i/255;
-    r_e(i) = pixel_fit(e(i),1,r,g,b,1);
-    g_e(i) = pixel_fit(e(i),2,r,g,b,1);
-    b_e(i) = pixel_fit(e(i),3,r,g,b,1);
-end
 
-
-%test an inverse function given e input vector and r_e data
-%in other words e = Bx
-B_inv = zeros(255, 4);
-G_inv = B_inv;
-R_inv = B_inv;
-
-for i = 1:255
-    R_inv(i,:) = [1 r_e(i) r_e(i)^2 r_e(i)^3];
-    G_inv(i,:) = [1 g_e(i) g_e(i)^2 g_e(i)^3];
-    B_inv(i,:) = [1 b_e(i) b_e(i)^2 b_e(i)^3];
-end
-r_inv = R_inv\e
-g_inv = G_inv\e
-b_inv = B_inv\e
-
-r_lin = r_inv(1) + r_inv(2)*mean_RF + r_inv(3)*mean_RF.^2 + r_inv(4)*mean_RF.^3;
-
-
-
-%% Calc Linearization Parameters
 fit_lin = r(1) + r(2)*E + r(3)*E.^2 + r(4)*E.^3;
-[g_r,] = CalcG(mean_RF',times_fuji);
-[g_g,] = CalcG(mean_GF',times_fuji);
-[g_b,] = CalcG(mean_BF',times_fuji);
+[g_r] = CalcG(mean_RF',times_fuji);
+[g_g] = CalcG(mean_GF',times_fuji);
+[g_b] = CalcG(mean_BF',times_fuji);
 
-%show different linearization results
+%show powerfit results
 figure()
+subplot(3,1,1)
 plot(t, mean_RF,'rx');
 hold on
-plot(t,t.^(1/g_r(2))*g_r(1),'b-');
-%plot(E,fit_lin,'b-');
-%plot(E,r_lin*255,'g-o')
-
+plot(t,t.^(1/g_r(2))*g_r(1),'r-');
 hold off
-title('Polynomial Fit to Red Channel')
-legend('Data', 'Gamma it','Poly fit','Linear(poly)')
-xlabel('Normalized Exposure [au]')
+title('Power Fit to Red Channel')
+legend('Data', 'Gamma fit')
+xlabel('Exposure [s]')
 ylabel('Brightness [au]')
-scale = 255; 
-for i = 1:length(t)
-    R_lin(i) =E(i)*scale* mean_RF(i)/fit_lin(i);
-end
-glinData = mean_RF.^(g(2)*1.0);
-glinData = glinData/max(glinData) * 255;
 
-%plot an example of the linearization function along with original data
-% figure(4)
-% plot(E,mean_RF,'rx')
-% hold on
-% plot(E,R_lin,'r-')
-% plot(E,glinData,'k-x')
-% hold off
-% title('Linearized Red Channel Data')
-% legend('Data', 'Linearized','gamma linearized')
-% xlabel('Normalized Exposure [au]')
-% ylabel('Brightness [au]')
+subplot(3,1,2)
+plot(t, mean_GF,'gx');
+hold on
+plot(t,t.^(1/g_g(2))*g_g(1),'g-');
+hold off
+title('Power Fit to Green Channel')
+legend('Data', 'Gamma fit')
+xlabel('Exposure [s]')
+ylabel('Brightness [au]')
+
+subplot(3,1,3)
+plot(t, mean_BF,'bx');
+hold on
+plot(t,t.^(1/g_b(2))*g_b(1),'b-');
+hold off
+title('Power Fit to Blue Channel')
+legend('Data', 'Gamma fit')
+xlabel('Exposure [s]')
+ylabel('Brightness [au]')
+
+%% Plot the linearized exposure data
+%show powerfit results
+figure()
+subplot(3,1,1)
+plot(t,mean_RF.^(g_r(2)),'r-');
+title('Linearized Exposure Data for Red Channel')
+xlabel('Exposure [s]')
+ylabel('Brightness [au]')
+
+subplot(3,1,2)
+plot(t,mean_GF.^(g_g(2)),'g-');
+title('Linearized Exposure Data for Green Channel')
+xlabel('Exposure [s]')
+ylabel('Brightness [au]')
+
+subplot(3,1,3)
+plot(t,mean_BF.^(g_b(2)),'b-');
+title('Linearized Exposure Data for Blue Channel')
+xlabel('Exposure [s]')
+ylabel('Brightness [au]')
 
 %% Normalize image data
 fName = ('Mission Chapel/_DSF1678.JPG')

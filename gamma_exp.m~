@@ -142,9 +142,9 @@ r_lin = r_inv(1) + r_inv(2)*mean_RF + r_inv(3)*mean_RF.^2 + r_inv(4)*mean_RF.^3;
 
 %% Calc Linearization Parameters
 fit_lin = r(1) + r(2)*E + r(3)*E.^2 + r(4)*E.^3;
-[g_r,] = CalcG(mean_RF',times_fuji);
-[g_g,] = CalcG(mean_GF',times_fuji);
-[g_b,] = CalcG(mean_BF',times_fuji);
+[g_r] = CalcG(mean_RF',times_fuji);
+[g_g] = CalcG(mean_GF',times_fuji);
+[g_b] = CalcG(mean_BF',times_fuji);
 
 %show different linearization results
 figure()
@@ -155,16 +155,15 @@ plot(t,t.^(1/g_r(2))*g_r(1),'b-');
 %plot(E,r_lin*255,'g-o')
 
 hold off
-title('Polynomial Fit to Red Channel')
-legend('Data', 'Gamma it','Poly fit','Linear(poly)')
-xlabel('Normalized Exposure [au]')
+title('Power Fit to Red Channel')
+legend('Data', 'Gamma fit')
+xlabel('Exposure [s]')
 ylabel('Brightness [au]')
 scale = 255; 
 for i = 1:length(t)
     R_lin(i) =E(i)*scale* mean_RF(i)/fit_lin(i);
 end
-glinData = mean_RF.^(g(2)*1.0);
-glinData = glinData/max(glinData) * 255;
+
 
 %plot an example of the linearization function along with original data
 % figure(4)
