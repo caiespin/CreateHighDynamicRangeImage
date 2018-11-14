@@ -1,4 +1,4 @@
-function [mean_R, mean_G, mean_B, T, gain, Imfiles] = RadioCalData(fdire,window)
+function [mean_R, mean_G, mean_B, T, gain, Imfiles] = RadioCalData(fdire,window,verbose)
 if ~ischar(fdire)
     error('Input must be a string of the root directory of the files')
 end
@@ -41,7 +41,8 @@ if ~ischar(window) && isempty(window)
     fName = char(strcat(fdire,'/',Imfiles(cI)));
     pic = imread(fName);
     f1 = figure('Name','Define Mask Window Section')
-    [J, rect] = imcrop(pic)
+    [J, rect] = imcrop(pic);
+    rect
     close(f1)
 end
 if ~ischar(window) && ~isempty(window)
@@ -59,5 +60,19 @@ for file = 1:fnum
     mean_R(file) = mean2(R);
     mean_G(file) = mean2(G);
     mean_B(file) = mean2(B);
+end
+%----------------------Print-----------------------
+if verbose
+f2 = figure('Name','Camera Compression Data');
+%subplot(2,1,1)
+plot(T,mean_R,'r--x')
+hold on
+plot(T,mean_B, 'b--x')
+plot(T,mean_G, 'g--x')
+hold off
+title('Fuji X-E2 Camera Compression Data')
+xlabel('Exposure time [sec]')
+ylabel('Brightness [au]')
+legend('Red','Blue','Green')
 end
 end
