@@ -1,4 +1,4 @@
-function [mean_R, mean_G, mean_B, T, gain, Imfiles] = RadioCalData(fdire)
+function [mean_R, mean_G, mean_B, T, gain, Imfiles] = RadioCalData(fdire,window)
 if ~ischar(fdire)
     error('Input must be a string of the root directory of the files')
 end
@@ -30,16 +30,26 @@ T(1) = [];
 T = double(T).^-1;
 gain = double(gain);
 %-----------------Define crop section--------------------
-[m,n] = size(Imfiles);
-cI = round(n/2);
-fName = char(strcat(fdire,'/',Imfiles(cI)));
-pic = imread(fName);
-f1 = figure('Name','Define Mask Window Section')
-[J, rect] = imcrop(pic);
+[m,fnum] = size(Imfiles);
+if  ischar(window)
+    fName = char(strcat(fdire,'/',Imfiles(1)));
+    [m,n,d] = size(imread(fName));
+    rect = [round((m-200)/2) round((n-200)/2) 100 100];
+end
+if ~ischar(window) && isempty(window)
+    cI = round(fnum/2);
+    fName = char(strcat(fdire,'/',Imfiles(cI)));
+    pic = imread(fName);
+    f1 = figure('Name','Define Mask Window Section')
+    [J, rect] = imcrop(pic)
+    close(f1)
+end
+if ~ischar(window) && ~isempty(window)
+    rect = window;
+end
 %----------------------Read Images-----------------------
-close(f1)
 %f2 = figure('Name','Flat surface pictures data set')
-for file = 1:n
+for file = 1:fnum
     fName = char(strcat(fdire,'/',Imfiles(file)));
     pic = imread(fName);
     mask = imcrop(pic,rect);
