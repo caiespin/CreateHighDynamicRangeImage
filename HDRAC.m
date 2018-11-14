@@ -1,6 +1,6 @@
 %HDRAC--HDR algorithm by Aaron and Carlos
 clear all;
-%close all;
+close all;
 
 %% Calculate the Fuji X-E1 compression algorithm
 [mean_RF, mean_BF, mean_GF, T, gain, Imfiles] = RadioCalData('G800',[1600 830 300 300],true);
