@@ -59,8 +59,8 @@ plot(E,r_lin,'r-o')
 plot(E,g_lin,'g-o')
 plot(E,b_lin,'b-o')
 hold off
-title('Polynomial Fit to Red Channel')
-legend('Data','Poly fit','Linear(poly)')
+title('Polynomial Fit Linearization')
+legend('Red','Green','Blue')
 xlabel('Normalized Exposure [au]')
 ylabel('Brightness [au]')
 

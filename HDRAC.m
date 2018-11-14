@@ -22,17 +22,7 @@ y_max = size(Pic1, 2);
 color_max = 3;
 scale = 255.0;
 Pic1_norm = double(Pic1);
-Pic1_lin = zeros(x_max,y_max,color_max);
-
-for x = 1:x_max
-    for y = 1:y_max
-        for color = 1:color_max %R = 1, G = 2 B = 3
-            alpha = Pic1_norm(x,y,color);
-            alpha_lin = pixel_fit(alpha,color,r_inv,b_inv,b_inv,scale);
-            Pic1_lin(x,y,color) = alpha_lin;
-        end
-    end
-end
+Pic1_lin = PolyLin(Pic1_norm,r_inv,b_inv,b_inv,scale);
 Pic1_lin = Pic1_lin*im_scale;
 
 figure()
@@ -53,18 +43,7 @@ x_max = size(Pic2, 1);
 y_max = size(Pic2, 2);
 color_max = 3;
 Pic2_norm = double(Pic2);
-Pic2_lin = zeros(x_max,y_max,color_max);
-for x = 1:x_max
-    for y = 1:y_max
-        for color = 1:color_max %R = 1, G = 2 B = 3
-            alpha = Pic2_norm(x,y,color);
-            alpha_lin = pixel_fit(alpha,color,r_inv,b_inv,b_inv,scale);
-            Pic2_lin(x,y,color) = alpha_lin;
-        end
-    end
-end
-
-
+Pic2_lin = PolyLin(Pic2_norm,r_inv,b_inv,b_inv,scale);
 Pic2_lin = Pic2_lin*im_scale;
 Pic2_lin = threshold(Pic2_lin);
 
@@ -85,17 +64,7 @@ x_max = size(Pic3, 1);
 y_max = size(Pic3, 2);
 color_max = 3;
 Pic3_norm = double(Pic3);
-Pic3_lin = zeros(x_max,y_max,color_max);
-for x = 1:x_max
-    for y = 1:y_max
-        for color = 1:color_max %R = 1, G = 2 B = 3
-            alpha = Pic3_norm(x,y,color);
-            alpha_lin = pixel_fit(alpha,color,r_inv,b_inv,b_inv,scale);
-            Pic3_lin(x,y,color) = alpha_lin;
-        end
-    end
-end
-
+Pic3_lin = PolyLin(Pic3_norm,r_inv,b_inv,b_inv,scale);
 Pic3_lin = Pic3_lin*im_scale;
 Pic3_lin = threshold(Pic3_lin);
 
