@@ -1,123 +1,19 @@
 %HDRAC--HDR algorithm by Aaron and Carlos
 clear all;
-close all;
+%close all;
 
-%% Generate the Fuji X-E2 Radiometric calibration
-%filename base string
-baseFujiFName = 'Gamma_img/FUJI/_DSF16';
-%extension string
-fext = '.JPG';
-%which files to use
-baseFujiFN = 87-1; %first file is 87
-x_min = 1600;
-y_min = 1000;
-%exposure data
-times_fuji = [1/4000;1/2000;1/1000;1/500;1/250;1/125;1/60];
-files = size(times_fuji,1);
-time = num2str(times_fuji);
+%% Calculate the Fuji X-E1 compression algorithm
+[mean_RF, mean_BF, mean_GF, T, gain, Imfiles] = RadioCalData('G800',[1600 830 300 300],true);
 
-figure()
-for file = 1:files
-    %choose the file based on the index
-    FN = baseFujiFN+file;
-    FNstr = num2str(FN);
-    %calculate the filename
-    fName = strcat(baseFujiFName,FNstr,fext);
-    %read image data
-    pic = imread(fName);
-    %mask off central white portion
-    mask = imcrop(pic,[x_min y_min,100,100]);
-    subplot(1,files,file)
-    imshow(mask)
-    timeStr = num2str(times_fuji(file,1));
-    title(strcat('t = ' , timeStr),'fontsize',10)
-    %split into channels
-    RF = mask(:,:,1);
-    GF = mask(:,:,2);
-    BF = mask(:,:,3);
-    %calculate mean brightness
-    mean_RF(file) = mean2(RF);
-    mean_GF(file) = mean2(GF);
-    mean_BF(file) = mean2(BF);
-end
-%Show all the data from the exposure tests
-
-figure()
-plot(times_fuji,mean_RF,'r--x')
-hold on
-plot(times_fuji,mean_BF, 'b--x')
-plot(times_fuji,mean_GF, 'g--x')
-hold off
-ax = gca;
-ax.FontSize = 12;
-title('Fuji X-E2 Camera Compression Data')
-xlabel('Exposure time [sec]')
-ylabel('Brightness [au]')
-legend('Red','Blue','Green')
-%% Calc Linearization Parameters
-%for the Fuji camera:
-t = times_fuji;
-
-fit_lin = r(1) + r(2)*E + r(3)*E.^2 + r(4)*E.^3;
-[g_r] = CalcG(mean_RF',times_fuji);
-[g_g] = CalcG(mean_GF',times_fuji);
-[g_b] = CalcG(mean_BF',times_fuji);
-
-%show powerfit results
-figure()
-subplot(3,1,1)
-plot(t, mean_RF,'rx');
-hold on
-plot(t,t.^(1/g_r(2))*g_r(1),'r-');
-hold off
-title('Power Fit to Red Channel')
-legend('Data', 'Gamma fit')
-xlabel('Exposure [s]')
-ylabel('Brightness [au]')
-
-subplot(3,1,2)
-plot(t, mean_GF,'gx');
-hold on
-plot(t,t.^(1/g_g(2))*g_g(1),'g-');
-hold off
-title('Power Fit to Green Channel')
-legend('Data', 'Gamma fit')
-xlabel('Exposure [s]')
-ylabel('Brightness [au]')
-
-subplot(3,1,3)
-plot(t, mean_BF,'bx');
-hold on
-plot(t,t.^(1/g_b(2))*g_b(1),'b-');
-hold off
-title('Power Fit to Blue Channel')
-legend('Data', 'Gamma fit')
-xlabel('Exposure [s]')
-ylabel('Brightness [au]')
-
-%% Plot the linearized exposure data
-%show powerfit results
-figure()
-subplot(3,1,1)
-plot(t,mean_RF.^(g_r(2)),'r-');
-title('Linearized Exposure Data for Red Channel')
-xlabel('Exposure [s]')
-ylabel('Brightness [au]')
-
-subplot(3,1,2)
-plot(t,mean_GF.^(g_g(2)),'g-');
-title('Linearized Exposure Data for Green Channel')
-xlabel('Exposure [s]')
-ylabel('Brightness [au]')
-
-subplot(3,1,3)
-plot(t,mean_BF.^(g_b(2)),'b-');
-title('Linearized Exposure Data for Blue Channel')
-xlabel('Exposure [s]')
-ylabel('Brightness [au]')
+%% Calculate the compression algorithm
+%Polinomial fitting
+[r_inv, g_inv, b_inv] = CalcPolCoef(mean_RF,mean_GF,mean_BF, T);
+scale = 255; 
+%Exponential fitting B^g
+[gR, gG, gB] = CalcG2(mean_RF,mean_GF,mean_BF, T,true);
 
 %% Normalize image data
-fName = ('Mission Chapel/_DSF1678.JPG')
+fName = ('Mission Chapel/_DSF1678.JPG');
 im_scale = 255/pixel_fit(255,1,r_inv,b_inv,b_inv,scale);
 %fName = ('Bike/_DSF1704.JPG')
 Pic1 = imread(fName);
@@ -150,7 +46,7 @@ subplot(3,2,6)
 histogram(Pic1_lin(:,:,3))
 %% Scale image 2 Middle picture
 
-fName = ('Mission Chapel/_DSF1674.JPG')
+fName = ('Mission Chapel/_DSF1674.JPG');
 %fName = ('Bike/_DSF1702.JPG')
 Pic2 = imread(fName);
 x_max = size(Pic2, 1);
@@ -226,3 +122,10 @@ comp1 = tonemap(comp1HDR,'AdjustSaturation',2.5, 'AdjustLightness', [0.15 1]);
 figure()
 comp1_rsize = imresize(comp1, 0.35);
 imshow(comp1_rsize)
+%% composition 2
+Image = ImMerge2(Pic1_lin,Pic2_lin,Pic3_lin,a);
+comp2 = tonemap(Image,'AdjustSaturation',2.5, 'AdjustLightness', [0.15 1]);
+figure()
+comp2_rsize = imresize(comp2, 0.35);
+imshow(comp2_rsize)
+
