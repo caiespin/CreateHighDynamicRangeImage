@@ -30,15 +30,15 @@ mask4 = not(mask3);
 %reduce exposure by time factor and merge
 im3 = (im3.*mask4)/a(3);
 pic_combine = pic_combine+im3;
-% % UNCOMMENT FOR MASK IMAGES
-% figure()
-% subplot(2,2,1)
-% imshow(uint8(mask1)*255);
-% subplot(2,2,2)
-% imshow(uint8(mask2)*255);
-% subplot(2,2,3)
-% imshow(uint8(mask3)*255);
-% subplot(2,2,4)
-% imshow(uint8(mask4)*255);
+% UNCOMMENT FOR MASK IMAGES
+figure()
+subplot(2,2,1)
+imshow(uint8(mask1)*255);
+subplot(2,2,2)
+imshow(uint8(mask2)*255);
+subplot(2,2,3)
+imshow(uint8(mask3)*255);
+subplot(2,2,4)
+imshow(uint8(mask4)*255);
  end
 

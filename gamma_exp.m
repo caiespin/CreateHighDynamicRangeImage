@@ -288,3 +288,10 @@ comp1 = tonemap(comp1HDR,'AdjustSaturation',2.5, 'AdjustLightness', [0.15 1]);
 figure()
 comp1_rsize = imresize(comp1, 0.35);
 imshow(comp1_rsize)
+%% composition 2
+Image = ImMerge2(Pic1_lin,Pic2_lin,Pic3_lin,a);
+comp2 = tonemap(Image,'AdjustSaturation',2.5, 'AdjustLightness', [0.15 1]);
+figure()
+comp2_rsize = imresize(comp2, 0.35);
+imshow(comp2_rsize)
+
