@@ -137,26 +137,28 @@ g_inv = G_inv\e
 b_inv = B_inv\e
 
 r_lin = r_inv(1) + r_inv(2)*mean_RF + r_inv(3)*mean_RF.^2 + r_inv(4)*mean_RF.^3;
+g_lin = g_inv(1) + g_inv(2)*mean_GF + g_inv(3)*mean_GF.^2 + r_inv(4)*mean_GF.^3;
 
 
 
 %% Calc Linearization Parameters
 fit_lin = r(1) + r(2)*E + r(3)*E.^2 + r(4)*E.^3;
-[g_r,] = CalcG(mean_RF',times_fuji);
-[g_g,] = CalcG(mean_GF',times_fuji);
-[g_b,] = CalcG(mean_BF',times_fuji);
+[g_r] = CalcG(mean_RF',times_fuji);
+[g_g] = CalcG(mean_GF',times_fuji);
+[g_b] = CalcG(mean_BF',times_fuji);
 
 %show different linearization results
 figure()
-plot(t, mean_RF,'rx');
+plot(E, mean_RF,'rx');
 hold on
-plot(t,t.^(1/g_r(2))*g_r(1),'b-');
-%plot(E,fit_lin,'b-');
-%plot(E,r_lin*255,'g-o')
+
+plot(E,fit_lin,'b-');
+plot(E,r_lin*255,'g-o')
+plot(E,g_lin*255,'g-o')
 
 hold off
 title('Polynomial Fit to Red Channel')
-legend('Data', 'Gamma it','Poly fit','Linear(poly)')
+legend('Data','Poly fit','Linear(poly)')
 xlabel('Normalized Exposure [au]')
 ylabel('Brightness [au]')
 scale = 255; 
@@ -288,3 +290,10 @@ comp1 = tonemap(comp1HDR,'AdjustSaturation',2.5, 'AdjustLightness', [0.15 1]);
 figure()
 comp1_rsize = imresize(comp1, 0.35);
 imshow(comp1_rsize)
+%% composition 2
+Image = ImMerge2(Pic1_lin,Pic2_lin,Pic3_lin,a);
+comp2 = tonemap(Image,'AdjustSaturation',2.5, 'AdjustLightness', [0.15 1]);
+figure()
+comp2_rsize = imresize(comp2, 0.35);
+imshow(comp2_rsize)
+
