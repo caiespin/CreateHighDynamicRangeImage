@@ -1,5 +1,4 @@
-function Image  = ImMerge2(im1,im2,im3,a)
-figure()
+function Image  = ImMerge1(im1,im2,im3,a,verbose)
 E_max = max(max(im1));
 mask = im1> E_max/a(2);
 maskAll = mask(:,:,1).*mask(:,:,2).*mask(:,:,3);
@@ -24,15 +23,17 @@ Image1 = (im1.*mask1);
 Image2 = (im2.*mask2/a(2));
 Image3 = ((im3.*mask3)/a(3));
 
-subplot(1,4,1)
-imshow(uint8(mask1*255));
-subplot(1,4,2)
-imshow(uint8(mask2*255));
-subplot(1,4,3)
-imshow(uint8(mask3*255));
-subplot(1,4,4)
-imshow(uint8(mask1 + mask2 + mask3)*255)
-
+if verbose
+    figure()
+    subplot(1,4,1)
+    imshow(uint8(mask1*255));
+    subplot(1,4,2)
+    imshow(uint8(mask2*255));
+    subplot(1,4,3)
+    imshow(uint8(mask3*255));
+    subplot(1,4,4)
+    imshow(uint8(mask1 + mask2 + mask3)*255)
+end
 Image = Image1 + Image2 + Image3;
 end
 

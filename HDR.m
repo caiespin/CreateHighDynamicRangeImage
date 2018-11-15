@@ -1,15 +1,34 @@
-%HDRAC--HDR algorithm by Aaron and Carlos
+%===============================  HDR.m  ==================================
+% Description:
+%   Script to generate a High Dynamic Range image
+%
+%   Input arguments:
+%      -Pictures stack files for Radiometric calibration located in a  
+%       folder on thesame directory as the script. The files must have 
+%       the following naming convention: 
+%               G<ISO Gain>_<Exposure time denominator>
+%      -Pictures Stack that will be used to generate the HDR image.
+%
+% Output:
+%   Low Dynamic Range Image usint two composition methods 
+% -------------------------------------------------------------------------
+%   Version   : 1.1
+%   Authors   : Aaron Hunter and Carlos Espinosa
+%   Created   : 11.14.18
+% -------------------------------------------------------------------------
 clear all;
 close all;
 
 %% =========Calculate the Camera (Fuji X-E1) compression algorithm=========
 [mean_RF, mean_BF, mean_GF, T, gain, Imfiles] = RadioCalData('G800',...
     [1600 830 300 300],true);
+
 %Polinomial fitting
 % [r_inv, g_inv, b_inv] = CalcPolCoef(mean_RF,mean_GF,mean_BF, T, true);
 % scale = 255; 
 %Exponential fitting B^g
-%[gR, gG, gB] = CalcG2(mean_RF,mean_GF,mean_BF, T,true);
+[gR, gG, gB] = CalcG2(mean_RF,mean_GF,mean_BF, T,true);
+
 
 %% =======================Linearize image data=============================
 %Linearize Base picture (Exposed to the right) using B^g
@@ -34,96 +53,151 @@ Pic3 = imread(fName);
 %% ================Plot original Pictures and histograms=================== 
 %---------------------------Plot selected pictures-------------------------
 figure()
-subplot(1,3,1)
+subplot(3,3,1)
 imshow(uint8(Pic1))
 str = 'Base Picture (Exposed to the right)';
 title(str)
-subplot(1,3,2)
+subplot(3,3,2)
 imshow(uint8(Pic2))
 str = 'Middle Picture';
 title(str)
-subplot(1,3,3)
+subplot(3,3,3)
 imshow(uint8(Pic3))
 str = 'Lightest Picture';
 title(str)
 %---Plot Histograms of the channels of the linearized picture1 B'^g(a0T)--- 
-figure()
-subplot(3,3,1)
-histogram(uint8(Pic1_lin(:,:,1)/sR1),25,'EdgeColor','k','FaceColor','r')
+subplot(3,3,4)
+histogram(Pic1_lin(:,:,1),25,'EdgeColor','k','FaceColor','r')
+axis([0 14.0*10^5 0 inf])
 str = ['Base Picture B' char(39) '^g(a0T) of Red channel'];
 title(str)
-subplot(3,3,2)
-histogram(uint8(Pic1_lin(:,:,2)/sG1),25,'EdgeColor','k','FaceColor','g')
+subplot(3,3,5)
+histogram(Pic1_lin(:,:,2),25,'EdgeColor','k','FaceColor','g')
+axis([0 14.0*10^5 0 inf])
 str = ['Base Picture B' char(39) '^g(a0T) of Green channel'];
 title(str)
-subplot(3,3,3)
-histogram(uint8(Pic1_lin(:,:,3)/sB1),25,'EdgeColor','k','FaceColor','b')
+subplot(3,3,6)
+histogram(Pic1_lin(:,:,3),25,'EdgeColor','k','FaceColor','b')
+axis([0 14.0*10^5 0 inf])
 str = ['Base Picture B' char(39) '^g(a0T) of Blue channel'];
 title(str)
-%Plot Histograms of the channels of the linearized picture2 B'^g(a1T) 
-subplot(3,3,4)
-histogram(uint8(Pic2_lin(:,:,1)/sR2),25,'EdgeColor','k','FaceColor','r')
+%---Plot Histograms of the channels of the linearized picture2 B'^g(a1T)--- 
+subplot(3,3,7)
+histogram(Pic2_lin(:,:,1),25,'EdgeColor','k','FaceColor','r')
+axis([0 14.0*10^5 0 inf])
 str = ['Middle Picture B' char(39) '^g(a1T) of Red channel'];
 title(str)
-subplot(3,3,5)
-histogram(uint8(Pic2_lin(:,:,2)/sG2),25,'EdgeColor','k','FaceColor','g')
+subplot(3,3,8)
+histogram(Pic2_lin(:,:,2),25,'EdgeColor','k','FaceColor','g')
+axis([0 14.0*10^5 0 inf])
 str = ['Middle Picture B' char(39) '^g(a1T) of Green channel'];
 title(str)
-subplot(3,3,6)
-histogram(uint8(Pic2_lin(:,:,3)/sB2),25,'EdgeColor','k','FaceColor','b')
+subplot(3,3,9)
+histogram(Pic2_lin(:,:,3),25,'EdgeColor','k','FaceColor','b')
+axis([0 14.0*10^5 0 inf])
 str = ['Middle Picture B' char(39) '^g(a1T) of Blue channel'];
 title(str)
-%Plot Histograms of the channels of the linearized picture2 B'^g(a2T) 
-subplot(3,3,7)
-histogram(uint8(Pic3_lin(:,:,1)/sR3),25,'EdgeColor','k','FaceColor','r')
+%---Plot Histograms of the channels of the linearized picture2 B'^g(a2T)--- 
+figure()
+subplot(3,3,1)
+histogram(Pic3_lin(:,:,1),25,'EdgeColor','k','FaceColor','r')
+axis([0 14.0*10^5 0 inf])
 str = ['Lightest Picture B' char(39) '^g(a2T) of Red channel'];
 title(str)
-subplot(3,3,8)
-histogram(uint8(Pic3_lin(:,:,2)/sG3),25,'EdgeColor','k','FaceColor','g')
+subplot(3,3,2)
+histogram(Pic3_lin(:,:,2),25,'EdgeColor','k','FaceColor','g')
+axis([0 14.0*10^5 0 inf])
 str = ['Lightest Picture B' char(39) '^g(a2T) of Green channel'];
 title(str)
-subplot(3,3,9)
-histogram(uint8(Pic3_lin(:,:,3)/sB3),25,'EdgeColor','k','FaceColor','b')
+subplot(3,3,3)
+histogram(Pic3_lin(:,:,3),25,'EdgeColor','k','FaceColor','b')
+axis([0 14.0*10^5 0 inf])
 str = ['Lightest Picture B' char(39) '^g(a2T) of Blue channel'];
 title(str)
-%% Scale by ratio of time
+
+%% ===================Scale pictures by a ratio of time====================
 t = [1/1000;1/125;1/30];
 a(1) = 1;
 a(2) = t(2)/t(1); %scale factor between image two and one
 a(3) = t(3)/t(1); %scale factor betweem image three and image one
-%composition 1
-comp1HDR = ImMerge1(Pic1_lin,Pic2_lin,Pic3_lin,a);
-comp1 = tonemap(comp1HDR,'AdjustSaturation',2,'AdjustLightness',[0.2 1]);
-figure()
-comp1_rsize = imresize(comp1, 0.35);
-imshow(comp1_rsize)
-%% composition 2
-Image = ImMerge2(Pic1_lin,Pic2_lin,Pic3_lin,a);
-comp2 = tonemap(Image,'AdjustSaturation',2, 'AdjustLightness', [0.2 1]);
-figure()
-comp2_rsize = imresize(comp2, 0.35);
-imshow(comp2_rsize)
+%---------------Plot Histograms of the scaled picture channels------------- 
+subplot(3,3,4)
+histogram(((Pic2_lin(:,:,1))/a(2)),25,'EdgeColor','k','FaceColor','r')
+axis([0 2.0*10^5 0 inf])
+str = ['Histogram B' char(39) '^g(a1T)/a1 of Red channel'];
+title(str)
+subplot(3,3,5)
+histogram(((Pic2_lin(:,:,2))/a(2)),25,'EdgeColor','k','FaceColor','g')
+axis([0 2.0*10^5 0 inf])
+str = ['Histogram B' char(39) '^g(a1T)/a1 of Green channel'];
+title(str)
+subplot(3,3,6)
+histogram(((Pic2_lin(:,:,3))/a(2)),25,'EdgeColor','k','FaceColor','b')
+axis([0 2.0*10^5 0 inf])
+str = ['Histogram B' char(39) '^g(a1T)/a1 of Blue channel'];
+title(str)
+%------Histograms of the channels of the scaled picture2 B'^g(a2T)/a2------ 
+subplot(3,3,7)
+histogram(((Pic3_lin(:,:,1))/a(3)),25,'EdgeColor','k','FaceColor','r')
+axis([0 2.0*10^5 0 inf])
+str = ['Histogram B' char(39) '^g(a2T)/a2 of Red channel'];
+title(str)
+subplot(3,3,8)
+histogram(((Pic3_lin(:,:,2))/a(3)),25,'EdgeColor','k','FaceColor','g')
+axis([0 2.0*10^5 0 inf])
+str = ['Histogram B' char(39) '^g(a2T)/a2 of Green channel'];
+title(str)
+subplot(3,3,9)
+histogram(((Pic3_lin(:,:,3))/a(3)),25,'EdgeColor','k','FaceColor','b')
+axis([0 2.0*10^5 0 inf])
+str = ['Histogram B' char(39) '^g(a2T)/a2 of Blue channel'];
+title(str)
 
-% 
-% ImLDR_g(:,:,1) = ImHDR(:,:,1).^(1/gR);
-% ImLDR_g(:,:,2) = ImHDR(:,:,2).^(1/gG);
-% ImLDR_g(:,:,3) = ImHDR(:,:,3).^(1/gB);
-% figure
-% subplot(2,3,1)
-% imshow(uint8(ImHDR/scale))
-% title('High Dynamic Range Result')
-% subplot(2,3,4)
-% imhist(uint8(ImHDR/scale))
-% axis([0 255 0 2.0*10^6])
-% subplot(2,3,2)
-% imshow(uint8(ImLDR_t))
-% title('Low Dynamic Range using tonemap')
-% subplot(2,3,5)
-% imhist(uint8(ImLDR_t))
-% axis([0 255 0 2.0*10^6])
-% subplot(2,3,3)
-% imshow(uint8(ImLDR_g))
-% title('Low Dynamic Range using B^{1/g}')
-% subplot(2,3,6)
-% imhist(uint8(ImLDR_g))
-% axis([0 255 0 2.0*10^6])
+%% =======================Create Composite Images==========================
+%------------------------------composition 1-------------------------------
+comp1HDR = ImMerge1(Pic1_lin,Pic2_lin,Pic3_lin,a,false);
+comp1 = tonemap(comp1HDR,'AdjustSaturation',2,'AdjustLightness',[0.2 1]);
+%------------------------------composition 2-------------------------------
+comp2HDR = ImMerge2(Pic1_lin,Pic2_lin,Pic3_lin,a,false);
+comp2 = tonemap(comp2HDR,'AdjustSaturation',2, 'AdjustLightness', [0.2 1]);
+
+comp1_rsize = imresize(comp1, 0.35);
+comp2_rsize = imresize(comp2, 0.35);
+%% ======================Plot Pictures and histograms====================== 
+%---------------Plot HDR images Composition 1 and Composition 2------------
+figure()
+subplot(1,2,1)
+imshow(comp1_rsize)
+str = 'HDR 1';
+title(str)
+subplot(1,2,2)
+imshow(comp2_rsize)
+str = 'HDR 2';
+title(str)
+%---------------Plot Histograms Composition 1 and Composition 2------------
+figure()
+subplot(3,3,1)
+histogram(((Pic2_lin(:,:,1))/a(2)),25,'EdgeColor','k','FaceColor','r')
+str = 'HDR 1 Histogram of the Red channel';
+title(str)
+subplot(3,3,2)
+histogram(((Pic2_lin(:,:,2))/a(2)),25,'EdgeColor','k','FaceColor','g')
+str = 'HDR 1 Histogram of the Red channel';
+title(str)
+subplot(3,3,3)
+histogram(((Pic2_lin(:,:,3))/a(2)),25,'EdgeColor','k','FaceColor','b')
+str = 'HDR 1 Histogram of the Red channel';
+title(str)
+%------Histograms of the channels of the scaled picture2 B'^g(a2T)/a2------ 
+subplot(3,3,4)
+histogram(((Pic3_lin(:,:,1))/a(3)),25,'EdgeColor','k','FaceColor','r')
+str = 'HDR 2 Histogram of the Red channel';
+title(str)
+subplot(3,3,5)
+histogram(((Pic3_lin(:,:,2))/a(3)),25,'EdgeColor','k','FaceColor','g')
+str = 'HDR 2 Histogram of the Red channel';
+title(str)
+subplot(3,3,6)
+histogram(((Pic3_lin(:,:,3))/a(3)),25,'EdgeColor','k','FaceColor','b')
+str = 'HDR 2 Histogram of the Red channel';
+title(str)

@@ -14,7 +14,7 @@ function [gR, gG, gB] = CalcG2(mean_RF,mean_GF,mean_BF, T,verbose)
     plot(T,(mean_BF.^gG)/(255^gG/255), 'b--x')
     plot(T,(mean_GF.^gB)/(255^gB/255), 'g--x')
     hold off
-    title('Fuji X-E2 Camera Compression Data Linearized (B^g) and scaled')
+    title('Camera Compression Data Linearized (B^g) and scaled')
     xlabel('Exposure time [sec]')
     ylabel('Brightness [au]')
     legend('Red','Blue','Green')
