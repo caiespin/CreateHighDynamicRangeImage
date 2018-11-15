@@ -143,7 +143,7 @@ Fig(\ref{fig:hist1}) shows the  histograms for each color channel of the lineari
 In this section we explore two different methods for combing the linearized images selected in the previous section. The first method selects the pixels with the highest SNR between the three images and uses them for the composite image.  The second one doesn't discard the non-saturated pixels.  Instead it takes the average of the pixels from the three images with non-saturated pixels. 
 
 \subsection{Composite Algorithm 1}
- In the first composite image, we selected the pixels from image 1 where the brightness $B \ge E_{max} /a_1$ where $a_1 = 1000/125 = 8$ and $E_{max}$ is the brightest value in image 1. This is because all the pixels from image 2 and image 3 are saturated above the exposure value.  We performed this with the use of a mask applied to image 1.  We then created a mask from image 1 where $B  <E_{max} /a_2$  and applied it to image 3.  these  pixels were then  divided by $a_2$ and represent the pixels with the highest SNR in this portion of the image.  Finally, we took the inverse of the two masks and generated the middle mask by multiplying them together.  This mask was then multiplied with image 2 pixels and the resulting image was  divided by $a_1$ to have the correct brightness.  The resulting image represents the pixels with the highest SNR between $E_{max}/a_{2}$ and $E_{max}/a_1$. The histogram of the final image is found in fig(\ref{fig:HDRhist}). The composite image is just the sum of the individual masked images.  The algorithm for the code generation is shown below for clarity.
+ In the first composite image, we selected the pixels from image 1 where the brightness $B \ge E_{max} /a_1$ where $a_1 = 1000/125 = 8$ and $E_{max}$ is the brightest value in image 1. This is because all the pixels from image 2 and image 3 are saturated above this exposure value.  We performed this with the use of a mask applied to image 1.  We then created a mask from image 1 where $B  <E_{max} /a_2$ (to have the correct brightness in the final image)  and applied it to image 3.  these  pixels were then  divided by $a_2$ and represent the pixels with the highest SNR in this portion of the image.  Finally, we took the inverse of the two masks and generated yet another mask by multiplying them together.  This mask was then applied to image 2 and the resulting image was  divided by $a_1$, again,  to have the correct brightness.  The resulting image represents the pixels with the highest SNR between $E_{max}/a_{2}$ and $E_{max}/a_1$. The histogram of the final image is found in fig(\ref{fig:HDRhist}). The composite image is just the sum of the individual masked images.  The algorithm for the code generation is shown below for clarity.
  \begin{verbatim}
  ...
  mask = im1>= E_max/a(2);
@@ -193,7 +193,7 @@ The immediate thing to note about both images is that the cross made from the wi
     \begin{center}
         \includegraphics[width=6 in]{comp1LDR.jpg}
 	 \end{center}
-    \caption{Composite image 1 after tone map function} 
+    \caption{Composite image 1 after the tone map.  Note the faint cross formed in the window and the detail in the painting on the wall.} 
     \label{fig:LDR1}
 \end{figure}
 
@@ -201,13 +201,13 @@ The immediate thing to note about both images is that the cross made from the wi
     \begin{center}
         \includegraphics[width=6 in]{comp2LDR.jpg}
 	 \end{center}
-    \caption{Composite image 2 after tone map function} 
+    \caption{Composite image 2 after applying the tone map.  Note the relatively higher contrast and greater detail, particularly around the window sill.} 
     \label{fig:LDR2}
 \end{figure}
 \FloatBarrier
 
 \section{Conclusions}
-In conclusion we have demonstrated the principle of generating HDR images by creating composite images from the same scene at multiple exposures.  The images we produced are ones that look realistic but actually do not exist in the real world.  In person the interior of the chapel was quite dark and the window was blinding.  The details of the painting were impossible to discern due to the bright window light. The slightly more sophisticated application demonstrated by the algorithm which uses all available information results in a visually more satisfying image, perhaps due to the greater amount of information encoded in the HDR image. More understanding of the tone map function would provide a better understanding of its output.  There are probably even more sophisticated ways to add all the picture information, perhaps weighting the pixels by their SNR.  
+In conclusion we have demonstrated the principle of generating HDR images by creating composite images of a scene at multiple exposures.  The images we produced are ones that look realistic but actually do not exist in the real world.  In person the interior of the chapel was quite dark and the light from the window dominated our vision.  Because of this the details of the painting were impossible to discern until we actually generate the HDR image itself.  The slightly more sophisticated application demonstrated by the algorithm which uses all available information results in a visually more satisfying image, perhaps due to the greater amount of information encoded in the HDR image. More understanding of the tone map function would provide a better understanding of its output.  There are probably even more sophisticated ways to add all the picture information, perhaps weighting the pixels by their SNR.  
 
 %%% End document
 \end{document}
