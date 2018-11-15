@@ -1,12 +1,11 @@
 function Image  = ImMerge2(im1,im2,im3,a)
 figure()
 E_max = max(max(im1));
-mask = im1> E_max/a(2);
+mask = im1>= E_max/a(2);
 maskAll = mask(:,:,1).*mask(:,:,2).*mask(:,:,3);
 mask(:,:,1) = double(maskAll);
 mask(:,:,2) = double(maskAll);
 mask(:,:,3) = double(maskAll);
-%mask for the first image where it has the highest exposure pixels 
 mask1 = mask;
 
 %mask the lowest exposure pixels
