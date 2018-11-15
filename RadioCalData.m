@@ -65,7 +65,7 @@ end
 if verbose
 f2 = figure('Name','Camera Compression Data');
 %subplot(2,1,1)
-plot(T,mean_R,'r--x')
+plot(T,mean_R, 'r--x')
 hold on
 plot(T,mean_B, 'b--x')
 plot(T,mean_G, 'g--x')
