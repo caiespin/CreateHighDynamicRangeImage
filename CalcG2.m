@@ -8,7 +8,7 @@ function [gR, gG, gB] = CalcG2(mean_RF,mean_GF,mean_BF, T,verbose)
     b = lsqcurvefit(fun,x0,T,mean_BF);
     gB = b(2);
     if verbose
-    flinG = figure('Name','Camera Compression Data Linearized');
+    figure('Name','Camera Compression Data Linearized');
     plot(T,(mean_RF.^gR)/(255^gR/255),'r--x')
     hold on
     plot(T,(mean_BF.^gG)/(255^gG/255), 'b--x')
