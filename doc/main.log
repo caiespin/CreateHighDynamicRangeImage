@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.5.23)  14 NOV 2018 18:40
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.5.23)  14 NOV 2018 22:11
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -744,80 +744,105 @@ Underfull \hbox (badness 10000) in paragraph at lines 45--46
 [1
 
 {/usr/local/texlive/2017/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
-<white_fuji.jpg, id=59, 1073.00874pt x 311.1625pt>
+<white_fuji.jpg, id=51, 1073.00874pt x 311.1625pt>
 File: white_fuji.jpg Graphic file (type jpg)
  <use white_fuji.jpg>
 Package pdftex.def Info: white_fuji.jpg used on input line 74.
 (pdftex.def)             Requested size: 452.9679pt x 131.35681pt.
 
-<Ecal.pdf, id=60, 512.83005pt x 438.85587pt>
-File: Ecal.pdf Graphic file (type pdf)
- <use Ecal.pdf>
-Package pdftex.def Info: Ecal.pdf used on input line 82.
-(pdftex.def)             Requested size: 433.62pt x 371.0806pt.
+<powerfit.png, id=52, 562.1pt x 421.575pt>
+File: powerfit.png Graphic file (type png)
+ <use powerfit.png>
+Package pdftex.def Info: powerfit.png used on input line 82.
+(pdftex.def)             Requested size: 289.07999pt x 216.80798pt.
 
-<powerfit.pdf, id=61, 579.31158pt x 404.40707pt>
+<powerfit.pdf, id=53, 579.31158pt x 404.40707pt>
 File: powerfit.pdf Graphic file (type pdf)
  <use powerfit.pdf>
 Package pdftex.def Info: powerfit.pdf used on input line 91.
-(pdftex.def)             Requested size: 433.62pt x 302.71216pt.
+(pdftex.def)             Requested size: 289.07999pt x 201.8081pt.
 
-<linearExposure.pdf, id=62, 583.57973pt x 386.10829pt>
-File: linearExposure.pdf Graphic file (type pdf)
+<linearExposure.png, id=54, 562.1pt x 421.575pt>
+File: linearExposure.png Graphic file (type png)
+ <use linearExposure.png>
+Package pdftex.def Info: linearExposure.png used on input line 99.
+(pdftex.def)             Requested size: 361.34999pt x 271.00998pt.
 
-<use linearExposure.pdf>
-Package pdftex.def Info: linearExposure.pdf used on input line 99.
-(pdftex.def)             Requested size: 433.62pt x 286.89397pt.
- [2 <./white_fuji.jpg>] [3 <./Ecal.pdf>] [4 <./powerfit.pdf> <./linearExposure.
-pdf>]
-
-LaTeX Warning: Reference `fig:linstack' on page 5 undefined on input line 109.
-
-
-LaTeX Warning: Reference `fig:hist2' on page 5 undefined on input line 109.
-
-<Chapel_Histogram_set.png, id=138, 1445.4pt x 724.95844pt>
+[2 <./white_fuji.jpg>] [3 <./powerfit.png (PNG copy)> <./powerfit.pdf>]
+[4 <./linearExposure.png (PNG copy)>]
+<Chapel_Histogram_set.png, id=99, 1445.4pt x 724.95844pt>
 File: Chapel_Histogram_set.png Graphic file (type png)
 
 <use Chapel_Histogram_set.png>
-Package pdftex.def Info: Chapel_Histogram_set.png used on input line 113.
+Package pdftex.def Info: Chapel_Histogram_set.png used on input line 115.
 (pdftex.def)             Requested size: 487.10257pt x 278.59734pt.
 
-Overfull \hbox (34.13467pt too wide) in paragraph at lines 113--114
- [][] 
+Overfull \hbox (34.13467pt too wide) in paragraph at lines 115--116
+[][] 
  []
 
+<imStack.png, id=100, 896.34875pt x 664.4825pt>
+File: imStack.png Graphic file (type png)
+ <use imStack.png>
+Package pdftex.def Info: imStack.png used on input line 121.
+(pdftex.def)             Requested size: 452.9679pt x 335.78914pt.
 
-LaTeX Warning: Reference `fig:comp1' on page 5 undefined on input line 123.
+<HistogramsLinearizedImages25Bins.png, id=101, 1647.15375pt x 918.43124pt>
+File: HistogramsLinearizedImages25Bins.png Graphic file (type png)
 
-[5
+<use HistogramsLinearizedImages25Bins.png>
+Package pdftex.def Info: HistogramsLinearizedImages25Bins.png used on input lin
+e 126.
+(pdftex.def)             Requested size: 452.9679pt x 252.56236pt.
+
+<HistogramsScaledImages25Bins_RangeModified.png, id=103, 1593.955pt x 620.3175p
+t>
+File: HistogramsScaledImages25Bins_RangeModified.png Graphic file (type png)
+ <use HistogramsScaledImages25Bins_RangeModified.png>
+Package pdftex.def Info: HistogramsScaledImages25Bins_RangeModified.png used on
+ input line 133.
+(pdftex.def)             Requested size: 452.9679pt x 176.2812pt.
+ [5
 
  <./Chapel_Histogram_set.png (PNG copy)>]
-<chapelLDR.jpg, id=145, 1864.9675pt x 1227.58624pt>
-File: chapelLDR.jpg Graphic file (type jpg)
- <use chapelLDR.jpg>
-Package pdftex.def Info: chapelLDR.jpg used on input line 146.
-(pdftex.def)             Requested size: 433.62pt x 285.41086pt.
 
-[6] [7 <./chapelLDR.jpg>]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 162.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 162.
+LaTeX Warning: Text page 6 contains only floats.
+
+[6 <./imStack.png (PNG copy)> <./HistogramsLinearizedImages25Bins.png>]
+
+LaTeX Warning: Reference `fig:comp1' on page 7 undefined on input line 146.
+
+[7 <./HistogramsScaledImages25Bins_RangeModified.png>]
+<comp1LDR.jpg, id=126, 1345.025pt x 881.2925pt>
+File: comp1LDR.jpg Graphic file (type jpg)
+ <use comp1LDR.jpg>
+Package pdftex.def Info: comp1LDR.jpg used on input line 188.
+(pdftex.def)             Requested size: 433.62pt x 284.11716pt.
+
+<comp2LDR.jpg, id=127, 1345.025pt x 881.2925pt>
+File: comp2LDR.jpg Graphic file (type jpg)
+ <use comp2LDR.jpg>
+Package pdftex.def Info: comp2LDR.jpg used on input line 196.
+(pdftex.def)             Requested size: 433.62pt x 284.11716pt.
+ [8] [9 <./comp1LDR.jpg> <./comp2LDR.jpg>] [10]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 207.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 207.
  (./main.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 162.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 162.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 207.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 207.
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: CEE72ECA00C2B2861DF751AB97B4DBF3;545.
+(rerunfilecheck)             Checksum: D60C8D2B6E96EF4D56BADC74B58978C7;433.
 
 
 LaTeX Warning: There were undefined references.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 162.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 207.
  ) 
 Here is how much of TeX's memory you used:
- 18209 strings out of 492995
- 339446 string characters out of 6132704
- 410697 words of memory out of 5000000
- 21413 multiletter control sequences out of 15000+600000
+ 18233 strings out of 492995
+ 340110 string characters out of 6132704
+ 411339 words of memory out of 5000000
+ 21429 multiletter control sequences out of 15000+600000
  12930 words of font info for 49 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  55i,8n,54p,1478b,344s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -833,10 +858,10 @@ al/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/
 texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/t
 exlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/tex
 live/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
-Output written on main.pdf (7 pages, 878445 bytes).
+Output written on main.pdf (10 pages, 1089106 bytes).
 PDF statistics:
- 204 PDF objects out of 1000 (max. 8388607)
- 163 compressed objects within 2 object streams
- 25 named destinations out of 1000 (max. 500000)
- 115 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 190 PDF objects out of 1000 (max. 8388607)
+ 148 compressed objects within 2 object streams
+ 30 named destinations out of 1000 (max. 500000)
+ 119 words of extra memory for PDF output out of 10000 (max. 10000000)
 

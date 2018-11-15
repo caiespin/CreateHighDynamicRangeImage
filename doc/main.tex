@@ -79,7 +79,7 @@ The fit of the data for each channel is shown in fig(\ref{fig:powerfit}.  It is 
 
 \begin{figure}[htb!]
     \begin{center}
-        \includegraphics[width=6 in]{Ecal.pdf}
+        \includegraphics[width=4 in]{powerfit.png}
 	 \end{center}
     \caption{Fujifilm X-E1 brightness values versus exposure time at ISO 800.} 
     \label{fig:Ecal}
@@ -88,7 +88,7 @@ The fit of the data for each channel is shown in fig(\ref{fig:powerfit}.  It is 
 
 \begin{figure}[htb!]
     \begin{center}
-        \includegraphics[width=6 in]{powerfit.pdf}
+        \includegraphics[width=4 in]{powerfit.pdf}
 	 \end{center}
     \caption{Power fit to the exposure data for each color channel} 
     \label{fig:powerfit}
@@ -96,9 +96,10 @@ The fit of the data for each channel is shown in fig(\ref{fig:powerfit}.  It is 
 
 \begin{figure}[htb!]
     \begin{center}
-        \includegraphics[width=6 in]{linearExposure.pdf}
+        \includegraphics[width=5in]{linearExposure.png}
 	 \end{center}
-    \caption{Linearization results on exposure data for each channel} 
+    \caption{Linearization results on exposure data for each channel.  Note that this fit to the camera data is not particularly good and the resulting linearization isn't particularly linear.  The important thing to
+    note is that the response is more linear than the compressed data. } 
     \label{fig:linEx}
 \end{figure}
 \FloatBarrier
@@ -106,18 +107,40 @@ The fit of the data for each channel is shown in fig(\ref{fig:powerfit}.  It is 
 \section{Picture Stack Acquisition}
 The photographs that we took inside the chapel are shown in fig(\ref{fig:stack}). In them the completely black areas demonstrate the pixels that are saturated and the histogram shows the brightness values once the saturated pixels are removed.  The darkest image is exposed such that the cross in the window is visible and not saturated.  It is taken at ISO 800 at 1/1000 of a second.  Each subsequent photograph is taken at twice the time of the previous one, up to the brightest photo in the collection taken at 1/60 second. To determine which images to use for our composite image, we evaluated each for their content.  The first picture selected is the one with no saturated pixels and clearly shows the faint cross made by the window panes.  The brightest image is also selected because it is exposed properly for the interior.  For the middle image we chose the one taken at 1/125 second because of the detail seen in the window sill itself. 
 
-Fig(\ref{fig:linstack}) shows the  histograms for each color channel of the linearized photographs.  Fig(\ref{fig:hist2}) shows the histograms for the second and third images chosen once their overall brightness is reduced by the ratio of their exposure time versus the base image exposure time. 
+Fig(\ref{fig:imStack}) shows the three images selected with their respective histograms after linearization but before dividing by exposure ratio.
+
+Fig(\ref{fig:hist1}) shows the  histograms for each color channel of the linearized photographs.  Fig(\ref{fig:hist2}) shows the histograms for the second and third images chosen once their overall brightness is reduced by the ratio of their exposure time versus the base image exposure time. 
 
 \begin{figure}[H]
-\centering
 \includegraphics[trim=7cm 1cm 1cm 0cm clip, scale=.4]{Chapel_Histogram_set.png}
 \caption{Picture Stack with ISO gain fixed at $G = 800$.  The first picture selected is the top left image.  The second is the middle right, and the third is bottom right.}
 \label{fig:stack}
 \end{figure}
+
+\begin{figure}[htb!]
+        \includegraphics[width=\textwidth]{imStack.png}
+    \caption{Image stack used for the HDR image and histograms} 
+    \label{fig:imStack}
+\end{figure}
+\begin{figure}[htb!]
+        \includegraphics[width=\textwidth]{HistogramsLinearizedImages25Bins.png}
+    \caption{Histograms for the linearized images} 
+    \label{fig:hist1}
+\end{figure}
+
+\begin{figure}[htb!]
+    \begin{center}
+        \includegraphics[width=\textwidth]{HistogramsScaledImages25Bins_RangeModified.png}
+	 \end{center}
+    \caption{Histograms for the linearized images, adjusted for exposure times.  Image 2 brightness values have been divided by $a_1 = 8$ and image 3 values have been divided by $a_2 = 33$} 
+    \label{fig:hist2}
+\end{figure}
+
+
 \FloatBarrier
 %-----------------------------------------------------------------------------------------S2
 \section{Composite Image Creation}
-In this section we explore two different methods for combing the linearized images selected in the previous section. The first method selects the pixels with the highest SNR between the three images and uses them for the composite image.  The second one doesn't throw away the non-saturated pixels.  Instead it takes the average of the pixels from the three images with non-saturated pixels. 
+In this section we explore two different methods for combing the linearized images selected in the previous section. .   The first method selects the pixels with the highest SNR between the three images and uses them for the composite image.  The second one doesn't throw away the non-saturated pixels.  Instead it takes the average of the pixels from the three images with non-saturated pixels. 
 
 \subsection{Composite Algorithm 1}
  In the first composite image, we selected the pixels from image 1 where the brightness $B \ge E_{max} /a_1$ where $a_1 = 1000/125 = 8$ and $E_{max}$ is the brightest value in image 1. We do this by creating a mask of that allows all the values at the correct brightness and multiplying it to image 1.  We do this because we know that every pixel in image 2 (and image 3) in this region will be saturated.  We then create a mask from image 1 where $B  <E_{max} /a_2$ this mask is applied to image 3 pixels  divided by $a_2$ and represents the pixels with the highest SNR in this portion of the image.  Finally, we take the inverse of the two masks and generate the middle mask by multiplying them together.  This mask is then multiplied with image 2 pixels from this region divided by $a_1$ and represents the pixels with the highest SNR between $E_{max}/a_{2}$ and $E_{max}/a_1$.  The composite image is just the sum of the individual masked images.  The historgram for composite image 1 is shown in fig(\ref{fig:comp1}). The algorithm for the code generation is shown below for clarity.
@@ -137,26 +160,48 @@ mask2 = not(mask1) .* not(mask3);
 
 \FloatBarrier
 \subsection{Composite Algorithm 2}
-For the second composite image we take an average of the non-saturated pixels in a given region.  Clearly, the values from image 1 above $E_{max}/a_1$ can only come from image 1.  For the pixels that fall between  $E_{max}/a_{2}$ and $E_{max}/a_1$ we take the average of the pixels from image 1 and image 2
+For the second composite image we take an average of the non-saturated pixels in a given region.  Clearly, the values from image 1 above $E_{max}/a_1$ can only come from image 1.  For the pixels that fall between  $E_{max}/a_{2}$ and $E_{max}/a_1$ we take the average of the pixels from image 1 and image 2.  For the remaining pixels the average of all three images is taken and applied.  The code for this is demonstrated in the following snippet.
+
+ \begin{verbatim}
+ ...
+mask = im1>= E_max/a(2);
+mask1 = mask;
+
+mask = im1 < E_max/a(3);
+mask3 = mask;
+
+mask2 = not(mask1) .* not(mask3);
+
+Image1 = (im1.*mask1);
+Image2 = (im1.*mask2 + im2.*mask2/a(2))/2;
+Image3 = (im1.*mask3 + (im2.*mask3)/a(2) +(im3.*mask3)/a(3))/3;
+...
+ \end{verbatim}
+
 %-----------------------------------------------------------------------------------------S3
 \section{Composite Image Reproduction}
-Now we need to revert the linearization by applying a non-linear function that will amplify the small values and reduce the large values
+Now that we have the HDR images we need a way to represent them.  If we naively convert them to 8 bit images we lose all the extra information that we added with the longer exposures.  For this report we used the tone map function within Matlab to generate standard resolution images.  Tone map functions by compressing the contrast of the scene while preserving the relative brightness values. Our initial attempts using the default parameters of the function resulted in a rather gray and flat image.  We adjust the saturation parameters to increase the intensity of the color and adjusted the lightness of the image to increase slightly the contrast.  The composite images are shown below.  Fig(\ref{fig:LDR1} is generated is the result using algorithm 1 above.  Fig(\ref{fig:LDR2}) is the image generated using the same parameters for tone map as used for composite image 1.  
+
+The immediate thing to note about both images is that the cross made from the window is  visible despite the dramatic contrast of the real world scene.  Also the details in the painting are easily visible. This is actually quite remarkable because these details were difficult to see in person.  The differences between the images is subtle.  The second composite image has larger overall contrast despite using the same parameters to generate the tone map.  More importantly though, the detail around the window area is improved.  The color balance of both images is slightly off, perhaps due to the influence of the color of the incandescent lights located in the candelabra fixture.  
 \begin{figure}[htb!]
     \begin{center}
-        \includegraphics[width=6 in]{chapelLDR.jpg}
+        \includegraphics[width=6 in]{comp1LDR.jpg}
 	 \end{center}
     \caption{Composite image 1 after tone map function} 
     \label{fig:LDR1}
 \end{figure}
+
+\begin{figure}[htb!]
+    \begin{center}
+        \includegraphics[width=6 in]{comp2LDR.jpg}
+	 \end{center}
+    \caption{Composite image 2 after tone map function} 
+    \label{fig:LDR2}
+\end{figure}
 \FloatBarrier
 
-%-----------------------------------------------------------------------------------------S4
-\section{Script Execution}
-
-\subsection{Requirements}
-%-----------------------------------------------------------------------------------------S5
 \section{Conclusions}
-
+In conclusion we have demonstrated the principle of generating HDR images by creating composite images from the same scene at multiple exposures.  The images we produced are ones that look realistic but actually do not exist in the real world.  In person the interior of the chapel was quite dark and the window was blinding.  The details of the painting were impossible to discern due to the bright window light. The slightly more sophisticated application demonstrated by the algorithm which uses all available information results in a visually more satisfying image, perhaps due to the greater amount of information encoded in the HDR image. More understanding of the tone map function would provide a better understanding of its output.  There are probably even more sophisticated ways to add all the picture information, perhaps weighting the pixels by their SNR.  
 
 %%% End document
 \end{document}
