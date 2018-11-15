@@ -1,6 +1,6 @@
 %===============================  HDR.m  ==================================
 % Description:
-%   Script to generate a High Dynamic Range image
+%   Script to generate a High Dynamic Range images
 %
 %   Input arguments:
 %      -Pictures stack files for Radiometric calibration located in a  
@@ -16,19 +16,15 @@
 %   Authors   : Aaron Hunter and Carlos Espinosa
 %   Created   : 11.14.18
 % -------------------------------------------------------------------------
+clc
 clear all;
 close all;
 
 %% =========Calculate the Camera (Fuji X-E1) compression algorithm=========
 [mean_RF, mean_BF, mean_GF, T, gain, Imfiles] = RadioCalData('G800',...
     [1600 830 300 300],true);
-
-%Polinomial fitting
-% [r_inv, g_inv, b_inv] = CalcPolCoef(mean_RF,mean_GF,mean_BF, T, true);
-% scale = 255; 
 %Exponential fitting B^g
 [gR, gG, gB] = CalcG2(mean_RF,mean_GF,mean_BF, T,true);
-
 
 %% =======================Linearize image data=============================
 %Linearize Base picture (Exposed to the right) using B^g
@@ -53,63 +49,63 @@ Pic3 = imread(fName);
 %% ================Plot original Pictures and histograms=================== 
 %---------------------------Plot selected pictures-------------------------
 figure()
-subplot(3,3,1)
+subplot(1,3,1)
 imshow(uint8(Pic1))
 str = 'Base Picture (Exposed to the right)';
 title(str)
-subplot(3,3,2)
+subplot(1,3,2)
 imshow(uint8(Pic2))
 str = 'Middle Picture';
 title(str)
-subplot(3,3,3)
+subplot(1,3,3)
 imshow(uint8(Pic3))
 str = 'Lightest Picture';
 title(str)
 %---Plot Histograms of the channels of the linearized picture1 B'^g(a0T)--- 
-subplot(3,3,4)
+figure()
+subplot(3,3,1)
 histogram(Pic1_lin(:,:,1),25,'EdgeColor','k','FaceColor','r')
 axis([0 14.0*10^5 0 inf])
 str = ['Base Picture B' char(39) '^g(a0T) of Red channel'];
 title(str)
-subplot(3,3,5)
+subplot(3,3,2)
 histogram(Pic1_lin(:,:,2),25,'EdgeColor','k','FaceColor','g')
 axis([0 14.0*10^5 0 inf])
 str = ['Base Picture B' char(39) '^g(a0T) of Green channel'];
 title(str)
-subplot(3,3,6)
+subplot(3,3,3)
 histogram(Pic1_lin(:,:,3),25,'EdgeColor','k','FaceColor','b')
 axis([0 14.0*10^5 0 inf])
 str = ['Base Picture B' char(39) '^g(a0T) of Blue channel'];
 title(str)
 %---Plot Histograms of the channels of the linearized picture2 B'^g(a1T)--- 
-subplot(3,3,7)
+subplot(3,3,4)
 histogram(Pic2_lin(:,:,1),25,'EdgeColor','k','FaceColor','r')
 axis([0 14.0*10^5 0 inf])
 str = ['Middle Picture B' char(39) '^g(a1T) of Red channel'];
 title(str)
-subplot(3,3,8)
+subplot(3,3,5)
 histogram(Pic2_lin(:,:,2),25,'EdgeColor','k','FaceColor','g')
 axis([0 14.0*10^5 0 inf])
 str = ['Middle Picture B' char(39) '^g(a1T) of Green channel'];
 title(str)
-subplot(3,3,9)
+subplot(3,3,6)
 histogram(Pic2_lin(:,:,3),25,'EdgeColor','k','FaceColor','b')
 axis([0 14.0*10^5 0 inf])
 str = ['Middle Picture B' char(39) '^g(a1T) of Blue channel'];
 title(str)
 %---Plot Histograms of the channels of the linearized picture2 B'^g(a2T)--- 
-figure()
-subplot(3,3,1)
+subplot(3,3,7)
 histogram(Pic3_lin(:,:,1),25,'EdgeColor','k','FaceColor','r')
 axis([0 14.0*10^5 0 inf])
 str = ['Lightest Picture B' char(39) '^g(a2T) of Red channel'];
 title(str)
-subplot(3,3,2)
+subplot(3,3,8)
 histogram(Pic3_lin(:,:,2),25,'EdgeColor','k','FaceColor','g')
 axis([0 14.0*10^5 0 inf])
 str = ['Lightest Picture B' char(39) '^g(a2T) of Green channel'];
 title(str)
-subplot(3,3,3)
+subplot(3,3,9)
 histogram(Pic3_lin(:,:,3),25,'EdgeColor','k','FaceColor','b')
 axis([0 14.0*10^5 0 inf])
 str = ['Lightest Picture B' char(39) '^g(a2T) of Blue channel'];
@@ -120,34 +116,35 @@ t = [1/1000;1/125;1/30];
 a(1) = 1;
 a(2) = t(2)/t(1); %scale factor between image two and one
 a(3) = t(3)/t(1); %scale factor betweem image three and image one
-%---------------Plot Histograms of the scaled picture channels------------- 
-subplot(3,3,4)
+%---------------Plot Histograms of the scaled picture channels-------------
+figure()
+subplot(3,3,1)
 histogram(((Pic2_lin(:,:,1))/a(2)),25,'EdgeColor','k','FaceColor','r')
 axis([0 2.0*10^5 0 inf])
 str = ['Histogram B' char(39) '^g(a1T)/a1 of Red channel'];
 title(str)
-subplot(3,3,5)
+subplot(3,3,2)
 histogram(((Pic2_lin(:,:,2))/a(2)),25,'EdgeColor','k','FaceColor','g')
 axis([0 2.0*10^5 0 inf])
 str = ['Histogram B' char(39) '^g(a1T)/a1 of Green channel'];
 title(str)
-subplot(3,3,6)
+subplot(3,3,3)
 histogram(((Pic2_lin(:,:,3))/a(2)),25,'EdgeColor','k','FaceColor','b')
 axis([0 2.0*10^5 0 inf])
 str = ['Histogram B' char(39) '^g(a1T)/a1 of Blue channel'];
 title(str)
 %------Histograms of the channels of the scaled picture2 B'^g(a2T)/a2------ 
-subplot(3,3,7)
+subplot(3,3,4)
 histogram(((Pic3_lin(:,:,1))/a(3)),25,'EdgeColor','k','FaceColor','r')
 axis([0 2.0*10^5 0 inf])
 str = ['Histogram B' char(39) '^g(a2T)/a2 of Red channel'];
 title(str)
-subplot(3,3,8)
+subplot(3,3,5)
 histogram(((Pic3_lin(:,:,2))/a(3)),25,'EdgeColor','k','FaceColor','g')
 axis([0 2.0*10^5 0 inf])
 str = ['Histogram B' char(39) '^g(a2T)/a2 of Green channel'];
 title(str)
-subplot(3,3,9)
+subplot(3,3,6)
 histogram(((Pic3_lin(:,:,3))/a(3)),25,'EdgeColor','k','FaceColor','b')
 axis([0 2.0*10^5 0 inf])
 str = ['Histogram B' char(39) '^g(a2T)/a2 of Blue channel'];
